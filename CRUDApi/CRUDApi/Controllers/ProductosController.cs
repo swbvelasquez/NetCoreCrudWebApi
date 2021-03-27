@@ -64,7 +64,7 @@ namespace CRUDApi.Controllers
 
         // Peticion PUT: api/Productos/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult<Producto>> updateProducto(int id, Producto producto)
+        public async Task<IActionResult> updateProducto(int id, Producto producto)
         {
             if (id != producto.Id)
             {
@@ -74,6 +74,22 @@ namespace CRUDApi.Controllers
             productoContexto.Entry(producto).State = EntityState.Modified;
             await productoContexto.SaveChangesAsync();
 
+            return NoContent();
+        }
+
+        // Peticion DELETE: api/Productos/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> deleteProducto(int id)
+        {
+            Producto producto = await productoContexto.Producto.FindAsync(id);
+
+            if (producto == null)
+            {
+                return NotFound();
+            }
+
+            productoContexto.Producto.Remove(producto);
+            await productoContexto.SaveChangesAsync();
             return NoContent();
         }
     }
